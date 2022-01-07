@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../screens/cart.dart';
 import '../providers/cart.dart';
 import '../widgets/badge.dart';
 
@@ -31,7 +32,9 @@ class _ProductsOverviewState extends State<ProductsOverview> {
             ),
             child: IconButton(
               icon: const Icon(Icons.shopping_cart),
-              onPressed: () {},
+              onPressed: () {
+                Navigator.of(context).pushNamed(CartScreen.routeName);
+              },
             ),
           ),
           PopupMenuButton(

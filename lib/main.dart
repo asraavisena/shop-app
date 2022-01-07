@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import './screens/cart.dart';
 
 import './providers/cart.dart';
 import './screens/product_detail.dart';
@@ -34,7 +35,10 @@ class MyApp extends StatelessWidget {
                 .copyWith(secondary: Colors.brown[300]),
             fontFamily: 'Lato'),
         home: const ProductsOverview(),
-        routes: {ProductDetail.routeName: (ctx) => const ProductDetail()},
+        routes: {
+          ProductDetail.routeName: (ctx) => const ProductDetail(),
+          CartScreen.routeName: (ctx) => CartScreen()
+        },
       ),
     );
   }
