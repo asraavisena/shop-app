@@ -26,8 +26,8 @@ class MyApp extends StatelessWidget {
             colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.brown)
                 .copyWith(secondary: Colors.lime[600]),
             fontFamily: 'Lato'),
-        home: ProductsOverview(),
-        routes: {ProductDetail.routeName: (ctx) => ProductDetail()},
+        home: const ProductsOverview(),
+        routes: {ProductDetail.routeName: (ctx) => const ProductDetail()},
       ),
     );
   }

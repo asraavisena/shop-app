@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../widgets/products_grid.dart';
 
 class ProductsOverview extends StatelessWidget {
-  ProductsOverview({
+  const ProductsOverview({
     Key? key,
   }) : super(key: key);
 
@@ -12,7 +12,7 @@ class ProductsOverview extends StatelessWidget {
       appBar: AppBar(
         title: const Text('My Shop App'),
       ),
-      body: ProductsGrid(),
+      body: const ProductsGrid(),
     );
     return scaffold;
   }
