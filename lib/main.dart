@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import './providers/cart.dart';
 import './screens/product_detail.dart';
 import './providers/products.dart';
 import './screens/products_overview.dart';
@@ -16,15 +17,21 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // ! REGISTER PROVIDER
-    return ChangeNotifierProvider(
-      create: (ctx) => Products(), //! ONLY REBUILD WHEN THE WIDGET LISTENED
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+            create: (ctx) =>
+                Products()), //! ONLY REBUILD WHEN THE WIDGET LISTENED
+        ChangeNotifierProvider(create: (ctx) => Cart()),
+      ],
       child: MaterialApp(
+        debugShowCheckedModeBanner: false,
         title: 'Shopp App Flutter',
         theme: ThemeData(
-            primarySwatch: Colors.brown,
+            primarySwatch: Colors.lime,
             //! ACCENT COLOR DEPECRATED USING COLOR SCHEME
-            colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.brown)
-                .copyWith(secondary: Colors.lime[600]),
+            colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.lime)
+                .copyWith(secondary: Colors.brown[300]),
             fontFamily: 'Lato'),
         home: const ProductsOverview(),
         routes: {ProductDetail.routeName: (ctx) => const ProductDetail()},

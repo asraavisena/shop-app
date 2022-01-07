@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../providers/cart.dart';
 import '../providers/product.dart';
 import '../screens/product_detail.dart';
 
@@ -19,6 +20,7 @@ class ProductItem extends StatelessWidget {
   Widget build(BuildContext context) {
     // ! NESTED
     final product = Provider.of<Product>(context, listen: false);
+    final cart = Provider.of<Cart>(context, listen: false);
     // ! FORCES CHILD WIDGET INTO CERTAIN SHAPE
     return ClipRRect(
       borderRadius: BorderRadius.circular(15),
@@ -37,7 +39,7 @@ class ProductItem extends StatelessWidget {
           ),
         ),
         footer: GridTileBar(
-          backgroundColor: Colors.black54,
+          backgroundColor: Colors.black87,
           leading: Consumer<Product>(
               // ! CONSUMER HANYA CHANGED SUBPART OF THE WIDGETS
               builder: (cx, product, child) {
@@ -60,7 +62,9 @@ class ProductItem extends StatelessWidget {
               Icons.shopping_cart,
               color: Theme.of(context).colorScheme.secondary,
             ),
-            onPressed: () {},
+            onPressed: () {
+              cart.addItem(product.id, product.price, product.title);
+            },
           ),
         ),
       ),
