@@ -21,10 +21,42 @@ class ProductDetail extends StatelessWidget {
             )
         .findById(productId);
     return Scaffold(
-      appBar: AppBar(
-        title: Text(loadedProduct.title),
-      ),
-      body: Container(),
-    );
+        appBar: AppBar(
+          title: Text(loadedProduct.title),
+        ),
+        body: SingleChildScrollView(
+          child: Column(
+            children: <Widget>[
+              Container(
+                margin: const EdgeInsets.symmetric(vertical: 1),
+                height: 300,
+                child: Image.network(
+                  loadedProduct.imageUrl,
+                  fit: BoxFit.cover,
+                  width: double.infinity,
+                ),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Text(
+                '\$${loadedProduct.price}',
+                style: const TextStyle(color: Colors.grey, fontSize: 18),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                width: double.infinity,
+                child: Text(
+                  loadedProduct.description,
+                  textAlign: TextAlign.center,
+                  softWrap: true,
+                ),
+              )
+            ],
+          ),
+        ));
   }
 }
