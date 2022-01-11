@@ -4,32 +4,24 @@ import 'package:provider/provider.dart';
 import '../providers/product.dart';
 import '../providers/products.dart';
 
-class EditProduct extends StatefulWidget {
-  static const routeName = '/edit-user-products';
+class AddProduct extends StatefulWidget {
+  static const routeName = '/add-user-products';
 
-  const EditProduct({Key? key}) : super(key: key);
+  const AddProduct({Key? key}) : super(key: key);
 
   @override
-  _EditProductState createState() => _EditProductState();
+  _AddProductState createState() => _AddProductState();
 }
 
-class _EditProductState extends State<EditProduct> {
+class _AddProductState extends State<AddProduct> {
   final _priceFocusNode = FocusNode();
   final _descriptionFocusNode = FocusNode();
-  var _imageUrlController = TextEditingController();
+  final _imageUrlController = TextEditingController();
   final _imageFocusNode = FocusNode();
   final _form = GlobalKey<FormState>();
 
   var _editedProduct =
       Product(id: '', title: '', description: '', price: 0, imageUrl: '');
-
-  var _isInit = true;
-  var _initValues = {
-    'title': '',
-    'description': '',
-    'price': '',
-    'imageUrl': ''
-  };
 
   // bool _hasImage = true;
 
@@ -37,27 +29,6 @@ class _EditProductState extends State<EditProduct> {
   void initState() {
     _imageFocusNode.addListener(_updateImageUrl);
     super.initState();
-  }
-
-  // ! PENGGANTI INITSTATE KARNA GK BISA DIPAKE KALAU ARGUMENTS DIKIRIM DARI ROUTE
-  @override
-  void didChangeDependencies() {
-    if (_isInit) {
-      final productId = ModalRoute.of(context)?.settings.arguments as String;
-      if (productId != null) {
-        final productFound = Provider.of<Products>(context).findById(productId);
-        _editedProduct = productFound;
-        _initValues = {
-          'title': _editedProduct.title,
-          'description': _editedProduct.description,
-          'price': _editedProduct.price.toString(),
-          // 'imageUrl': ''
-        };
-        _imageUrlController.text = _editedProduct.imageUrl;
-      }
-    }
-    _isInit = false;
-    super.didChangeDependencies();
   }
 
   void _updateImageUrl() {
@@ -83,16 +54,10 @@ class _EditProductState extends State<EditProduct> {
     if (!isValid) {
       return;
     }
+    // ! SAVE METHOD WILL TRIGGEERD TEXTFROMFIELD AND ADD VALUE
     _form.currentState?.save();
 
-    if (_editedProduct.id != null) {
-      Provider.of<Products>(context, listen: false)
-          .updateProduct(_editedProduct.id as String, _editedProduct);
-    } else {
-      // ! SAVE METHOD WILL TRIGGEERD TEXTFROMFIELD AND ADD VALUE
-      Provider.of<Products>(context, listen: false).addProduct(_editedProduct);
-    }
-
+    Provider.of<Products>(context, listen: false).addProduct(_editedProduct);
     Navigator.of(context).pop();
   }
 
@@ -122,7 +87,6 @@ class _EditProductState extends State<EditProduct> {
               child: Column(
                 children: <Widget>[
                   TextFormField(
-                    initialValue: _initValues['title'],
                     decoration: const InputDecoration(
                       labelText: 'Title',
                     ),
@@ -132,8 +96,7 @@ class _EditProductState extends State<EditProduct> {
                     },
                     onSaved: (value) {
                       _editedProduct = Product(
-                          id: _editedProduct.id,
-                          isFavourite: _editedProduct.isFavourite,
+                          id: '',
                           title: value as String,
                           description: _editedProduct.description,
                           price: _editedProduct.price,
@@ -148,7 +111,6 @@ class _EditProductState extends State<EditProduct> {
                     },
                   ),
                   TextFormField(
-                    initialValue: _initValues['price'],
                     decoration: const InputDecoration(
                       labelText: 'Price',
                     ),
@@ -161,8 +123,7 @@ class _EditProductState extends State<EditProduct> {
                     },
                     onSaved: (value) {
                       _editedProduct = Product(
-                          id: _editedProduct.id,
-                          isFavourite: _editedProduct.isFavourite,
+                          id: '',
                           title: _editedProduct.title,
                           description: _editedProduct.description,
                           price: double.parse(value as String),
@@ -183,7 +144,6 @@ class _EditProductState extends State<EditProduct> {
                     },
                   ),
                   TextFormField(
-                    initialValue: _initValues['description'],
                     decoration: const InputDecoration(
                       labelText: 'Description',
                     ),
@@ -195,8 +155,7 @@ class _EditProductState extends State<EditProduct> {
                     // },
                     onSaved: (value) {
                       _editedProduct = Product(
-                          id: _editedProduct.id,
-                          isFavourite: _editedProduct.isFavourite,
+                          id: '',
                           title: _editedProduct.title,
                           description: value as String,
                           price: _editedProduct.price,
@@ -230,7 +189,6 @@ class _EditProductState extends State<EditProduct> {
                       // ! TEXTFORMFIELD WILL GET AS MUCH AS WIDTH THEY CAN GET
                       Expanded(
                         child: TextFormField(
-                          initialValue: _initValues['imageUrl'],
                           decoration:
                               const InputDecoration(labelText: 'Image Url'),
                           keyboardType: TextInputType.url,
@@ -240,8 +198,7 @@ class _EditProductState extends State<EditProduct> {
                           onFieldSubmitted: (_) => _saveForm(),
                           onSaved: (value) {
                             _editedProduct = Product(
-                                id: _editedProduct.id,
-                                isFavourite: _editedProduct.isFavourite,
+                                id: '',
                                 title: _editedProduct.title,
                                 description: _editedProduct.description,
                                 price: _editedProduct.price,

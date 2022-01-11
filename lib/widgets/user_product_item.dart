@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../providers/products.dart';
 import '../screens/edit_product.dart';
 
 class UserProductItem extends StatelessWidget {
   final String title;
+  final String id;
   final String imageUrl;
-  const UserProductItem({Key? key, required this.imageUrl, required this.title})
+  const UserProductItem(
+      {Key? key, required this.imageUrl, required this.title, required this.id})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final productsDate = Provider.of<Products>(context);
     return ListTile(
       title: Text(title),
       leading: CircleAvatar(
@@ -22,13 +27,16 @@ class UserProductItem extends StatelessWidget {
           children: <Widget>[
             IconButton(
               onPressed: () {
-                Navigator.of(context).pushNamed(EditProduct.routeName);
+                Navigator.of(context)
+                    .pushNamed(EditProduct.routeName, arguments: id);
               },
               icon: Icon(Icons.edit),
               color: Theme.of(context).primaryColor,
             ),
             IconButton(
-              onPressed: () {},
+              onPressed: () {
+                productsDate.deleteProduct(id);
+              },
               icon: Icon(Icons.delete),
               color: Theme.of(context).errorColor,
             ),

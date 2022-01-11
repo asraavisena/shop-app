@@ -63,7 +63,7 @@ class ProductItem extends StatelessWidget {
               color: Theme.of(context).colorScheme.secondary,
             ),
             onPressed: () {
-              cart.addItem(product.id, product.price, product.title);
+              cart.addItem(product.id as String, product.price, product.title);
               // ! OF TAKE A CONTEXT
               ScaffoldMessenger.of(context).hideCurrentSnackBar();
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -75,7 +75,7 @@ class ProductItem extends StatelessWidget {
                 action: SnackBarAction(
                     label: 'undo',
                     onPressed: () {
-                      cart.removeSingleItem(product.id);
+                      cart.removeSingleItem(product.id as String);
                     }),
               )); //! => TAKE NEARES SCAFFOLD WIDGET
             },
