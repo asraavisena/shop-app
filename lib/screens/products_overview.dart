@@ -64,7 +64,7 @@ class _ProductsOverviewState extends State<ProductsOverview> {
           ),
         ],
       ),
-      drawer: AppDrawer(),
+      drawer: const AppDrawer(),
       body: ProductsGrid(showFav: _showOnlyFavourites),
     );
     return scaffold;
