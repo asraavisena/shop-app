@@ -108,7 +108,7 @@ class _EditProductState extends State<EditProduct> {
       appBar: AppBar(
         title: const Text('Edit Product'),
         actions: <Widget>[
-          IconButton(onPressed: _saveForm, icon: Icon(Icons.save))
+          IconButton(onPressed: _saveForm, icon: const Icon(Icons.save))
         ],
       ),
 
@@ -221,7 +221,7 @@ class _EditProductState extends State<EditProduct> {
                           border: Border.all(width: 1, color: Colors.grey),
                         ),
                         child: _imageUrlController.text.isEmpty
-                            ? Text('Enter Url')
+                            ? const Text('Enter Url')
                             : FittedBox(
                                 child: Image.network(_imageUrlController.text),
                                 fit: BoxFit.cover,

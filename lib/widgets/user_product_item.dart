@@ -30,14 +30,14 @@ class UserProductItem extends StatelessWidget {
                 Navigator.of(context)
                     .pushNamed(EditProduct.routeName, arguments: id);
               },
-              icon: Icon(Icons.edit),
+              icon: const Icon(Icons.edit),
               color: Theme.of(context).primaryColor,
             ),
             IconButton(
               onPressed: () {
                 productsDate.deleteProduct(id);
               },
-              icon: Icon(Icons.delete),
+              icon: const Icon(Icons.delete),
               color: Theme.of(context).errorColor,
             ),
           ],

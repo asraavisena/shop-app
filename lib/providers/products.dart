@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import './product.dart';
 
 // ! LISTENER
@@ -66,23 +69,35 @@ class Products with ChangeNotifier {
     return _items.firstWhere((element) => element.id == id);
   }
 
-  void addProduct(Product product) {
+  Future<void> addProduct(Product product) {
     // _items.add(value);
-    final newProduct = Product(
-        id: DateTime.now().toString(),
-        title: product.title,
-        description: product.description,
-        price: product.price,
-        imageUrl: product.imageUrl);
-    _items.add(newProduct);
-    // ! OR
-    // _items.insert(0, newProduct); // at start of the list
-    notifyListeners();
+    final url = Uri.https(
+        'shop-app-flutter-db272-default-rtdb.asia-southeast1.firebasedatabase.app',
+        '/product.json');
+    return http
+        .post(url,
+            body: json.encode({
+              'title': product.title,
+              'description': product.description,
+              'price': product.price,
+              'imageUrl': product.imageUrl
+            }))
+        .then((res) {
+      final newProduct = Product(
+          id: DateTime.now().toString(),
+          title: product.title,
+          description: product.description,
+          price: product.price,
+          imageUrl: product.imageUrl);
+      _items.add(newProduct);
+      // ! OR
+      // _items.insert(0, newProduct); // at start of the list
+      notifyListeners();
+    });
   }
 
   void updateProduct(String id, Product newProduct) {
     // _items.add(value);
-    print(id);
     final prodIndex = _items.indexWhere((element) => element.id == id);
     if (prodIndex >= 0) {
       _items[prodIndex] = newProduct;
