@@ -69,6 +69,7 @@ class Products with ChangeNotifier {
     return _items.firstWhere((element) => element.id == id);
   }
 
+  // ! HTTP REQ FETCH DATA
   Future<void> fetchProduct() async {
     final url = Uri.https(
         'shop-app-flutter-db272-default-rtdb.asia-southeast1.firebasedatabase.app',
@@ -93,6 +94,7 @@ class Products with ChangeNotifier {
     }
   }
 
+  // ! HTTP REQ ADD DATA
   Future<void> addProduct(Product product) async {
     // _items.add(value);
     final url = Uri.https(
@@ -151,21 +153,36 @@ class Products with ChangeNotifier {
   //   });
   // }
 
-  void updateProduct(String id, Product newProduct) {
+  Future<void> updateProduct(String id, Product newProduct) async {
     // _items.add(value);
+
     final prodIndex = _items.indexWhere((element) => element.id == id);
     if (prodIndex >= 0) {
-      _items[prodIndex] = newProduct;
-      // final newProduct = Product(
-      //     id: DateTime.now().toString(),
-      //     title: product.title,
-      //     description: product.description,
-      //     price: product.price,
-      //     imageUrl: product.imageUrl);
-      // _items.add(newProduct);
-      // ! OR
-      // _items.insert(0, newProduct); // at start of the list
-      notifyListeners();
+      final url = Uri.https(
+          'shop-app-flutter-db272-default-rtdb.asia-southeast1.firebasedatabase.app',
+          '/product/$id.json');
+      try {
+        await http.patch(url,
+            body: json.encode({
+              'title': newProduct.title,
+              'description': newProduct.description,
+              'price': newProduct.price,
+              'imageUrl': newProduct.imageUrl
+            }));
+        _items[prodIndex] = newProduct;
+        // final newProduct = Product(
+        //     id: DateTime.now().toString(),
+        //     title: product.title,
+        //     description: product.description,
+        //     price: product.price,
+        //     imageUrl: product.imageUrl);
+        // _items.add(newProduct);
+        // ! OR
+        // _items.insert(0, newProduct); // at start of the list
+        notifyListeners();
+      } catch (e) {
+        throw e;
+      }
     } else {
       print('notfound');
     }
