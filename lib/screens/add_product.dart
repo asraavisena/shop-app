@@ -49,7 +49,7 @@ class _AddProductState extends State<AddProduct> {
     super.dispose();
   }
 
-  void _saveForm() {
+  void _saveForm() async {
     // ! TRIGERRED VALIDATION
     final isValid = _form.currentState!.validate();
     if (!isValid) {
@@ -61,14 +61,30 @@ class _AddProductState extends State<AddProduct> {
     setState(() {
       _isLoading = true;
     });
-    Provider.of<Products>(context, listen: false)
-        .addProduct(_editedProduct)
-        .then((_) {
+
+    try {
+      await Provider.of<Products>(context, listen: false)
+          .addProduct(_editedProduct);
+    } catch (e) {
+      await showDialog<Null>(
+          context: context,
+          builder: (ctx) => AlertDialog(
+                title: const Text('An error occured'),
+                content: const Text('Something went wrong!'),
+                actions: <Widget>[
+                  TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: const Text('Okay'))
+                ],
+              ));
+    } finally {
       setState(() {
         _isLoading = false;
       });
       Navigator.of(context).pop();
-    });
+    }
   }
 
   @override

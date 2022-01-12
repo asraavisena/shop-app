@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../providers/products.dart';
 import '../widgets/app_drawer.dart';
 import '../screens/cart.dart';
 import '../providers/cart.dart';
@@ -20,6 +21,31 @@ class ProductsOverview extends StatefulWidget {
 
 class _ProductsOverviewState extends State<ProductsOverview> {
   var _showOnlyFavourites = false;
+  var _isInit = true;
+  var _isLoad = false;
+  @override
+  void initState() {
+    // ! SEMUA OF GK BAKAL WORK DI INITSTATE
+    // Provider.of<Products>(context).fetchProduct();
+    // ! SOLVENYA PAKE FUTURE.DELAYED(DURATION.ZERO)
+    super.initState();
+  }
+
+  // ! AFTER INITSTATE DAN SEBELUM RENDER
+  @override
+  void didChangeDependencies() {
+    if (_isInit) {
+      _isLoad = true;
+      Provider.of<Products>(context).fetchProduct().then((_) {
+        setState(() {
+          _isLoad = false;
+        });
+      });
+    }
+    _isInit = false;
+    super.didChangeDependencies();
+  } //! dont change into async await for each state like this one and initstate
+
   @override
   Widget build(BuildContext context) {
     var scaffold = Scaffold(
@@ -65,7 +91,11 @@ class _ProductsOverviewState extends State<ProductsOverview> {
         ],
       ),
       drawer: const AppDrawer(),
-      body: ProductsGrid(showFav: _showOnlyFavourites),
+      body: _isLoad
+          ? const Center(
+              child: CircularProgressIndicator(),
+            )
+          : ProductsGrid(showFav: _showOnlyFavourites),
     );
     return scaffold;
   }
