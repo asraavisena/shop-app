@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import '../models/http_excception.dart';
 
@@ -28,7 +29,7 @@ class Auth with ChangeNotifier {
   Future<void> singUp(String email, String password) async {
     try {
       final url = Uri.parse(
-          'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyCLEGKAD6K0qIrSXAa_3NUAKDNczAn_wjM');
+          'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${dotenv.env['FIREBASE_API_KEY']}');
       final response = await http.post(url,
           body: json.encode({
             'email': email,
@@ -51,7 +52,7 @@ class Auth with ChangeNotifier {
 
   Future<void> logIn(String email, String password) async {
     final url = Uri.parse(
-        'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyCLEGKAD6K0qIrSXAa_3NUAKDNczAn_wjM');
+        'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${dotenv.env['FIREBASE_API_KEY']}');
     final response = await http.post(url,
         body: json.encode(
             {'email': email, 'password': password, 'returnSecureToken': true}));
