@@ -25,7 +25,7 @@ class _ProductsOverviewState extends State<ProductsOverview> {
   var _isLoad = false;
   @override
   void initState() {
-    // ! SEMUA OF GK BAKAL WORK DI INITSTATE kalau pake listen: false 'cuma bisa di provider' baru bisa pake future / async await
+    // ! SEMUA OF GK BAKAL WORK DI INITSTATE
     // Provider.of<Products>(context).fetchProduct();
     // ! SOLVENYA PAKE FUTURE.DELAYED(DURATION.ZERO)
     super.initState();
