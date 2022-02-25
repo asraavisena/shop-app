@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import './providers/auth.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import './screens/orders.dart' as ordersscreen;
 import './providers/orders.dart';
 import './screens/cart.dart';
@@ -14,7 +15,8 @@ import './screens/edit_product.dart';
 import './screens/add_product.dart';
 import './screens/auth.dart';
 
-void main() {
+Future<void> main() async {
+  await dotenv.load();
   runApp(const MyApp());
 }
 
@@ -28,9 +30,20 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (ctx) => Auth()),
-          ChangeNotifierProvider(
-              create: (ctx) =>
-                  Products()), //! ONLY REBUILD WHEN THE WIDGET LISTENED
+          ChangeNotifierProxyProvider<Auth, Products>(
+              // ! CARA PERTAMA
+              // create: (_) => Products(null, []),
+              // update: (ctx, auth, prevProducts) => Products(
+              //     auth.token as String,
+              //     prevProducts == null
+              //         ? []
+              //         : prevProducts
+              //             .items)
+              // ! KARNA ADA ERROR DI NULL PAKE CARA KEDUA AJA
+              create: (_) => Products(),
+              update: (_, auth, products) => products!
+                ..authToken = auth.token
+                    as String), //! ONLY REBUILD WHEN THE WIDGET LISTENED
           ChangeNotifierProvider(create: (ctx) => Cart()),
           ChangeNotifierProvider(create: (ctx) => Orders()),
         ],

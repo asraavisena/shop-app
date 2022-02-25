@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import '../models/http_excception.dart';
 import './product.dart';
+import './auth.dart';
 
 // ! LISTENER
 
@@ -44,6 +45,18 @@ class Products with ChangeNotifier {
 
   // var _showFavouriteOnly = false;
 
+// ! SETUP CARA PERTAMA
+  // final String authToken;
+  // Products(this.authToken, this._items);
+  // ! CARA KEDUA
+  String? _authToken;
+
+  set authToken(String value) {
+//   if (_auth != value) {
+    _authToken = value;
+//   }
+  }
+
   List<Product> get items {
     // if (_showFavouriteOnly) {
     //   return _items.where((element) => element.isFavourite).toList();
@@ -71,11 +84,16 @@ class Products with ChangeNotifier {
 
   // ! HTTP REQ FETCH DATA
   Future<void> fetchProduct() async {
+    // const -> compile time constant
+    // final -> run time constant
     final url = Uri.https(
         'shop-app-flutter-db272-default-rtdb.asia-southeast1.firebasedatabase.app',
-        '/product.json');
+        '/product.json',
+        {'auth': '$_authToken'});
     try {
-      final response = await http.get(url);
+      final response = await http.get(
+        url,
+      );
       final extractData = json.decode(response.body) as Map<String, dynamic>;
       // ! RUN CODE IF YOU HAVE NO DATA
       if (extractData == null) {
