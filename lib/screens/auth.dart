@@ -120,7 +120,6 @@ class _AuthCardState extends State<AuthCard> {
   }
 
   Future<void> _submit() async {
-    print('test');
     if (!_formKey.currentState!.validate()) {
       // Invalid!
       return;
@@ -137,9 +136,9 @@ class _AuthCardState extends State<AuthCard> {
       } else {
         // Sign user up
         await Provider.of<Auth>(context, listen: false)
-            .singUp(_authData['email']!, _authData['password']!);
+            .signUp(_authData['email']!, _authData['password']!);
       }
-      Navigator.of(context).pushReplacementNamed('/products-overview');
+      // Navigator.of(context).pushReplacementNamed('/products-overview');
     } on HttpException catch (e) {
       var errMsg = 'Authentication failed';
       if (e.toString().contains('EMAIL_EXISTS')) {
@@ -155,14 +154,14 @@ class _AuthCardState extends State<AuthCard> {
       }
       _showErrDialog(errMsg);
     } catch (e) {
+      print("disini =>> $e");
       const errMsg = 'Could not authenticate. Please try again';
       _showErrDialog(errMsg);
-      throw e;
+      // throw e;
     }
     setState(() {
       _isLoading = false;
     });
-    print(_authData);
   }
 
   void _switchAuthMode() {

@@ -10,7 +10,7 @@ class UserProducts extends StatelessWidget {
   static const routeName = '/user-products';
 
   Future<void> _refreshProduct(BuildContext context) async {
-    await Provider.of<Products>(context, listen: false).fetchProduct();
+    await Provider.of<Products>(context, listen: false).fetchProduct(true);
   }
 
   const UserProducts({Key? key}) : super(key: key);
@@ -18,7 +18,7 @@ class UserProducts extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // ! LISTENERS
-    final productsData = Provider.of<Products>(context);
+    // final productsData = Provider.of<Products>(context);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Your Products'),
@@ -31,26 +31,36 @@ class UserProducts extends StatelessWidget {
         ],
       ),
       drawer: const AppDrawer(),
-      body: RefreshIndicator(
-        onRefresh: () => _refreshProduct(context),
-        child: Padding(
-          padding: const EdgeInsets.all(8),
-          child: ListView.builder(
-            itemBuilder: (_, i) {
-              return Column(
-                children: [
-                  UserProductItem(
-                    imageUrl: productsData.items[i].imageUrl,
-                    title: productsData.items[i].title,
-                    id: productsData.items[i].id as String,
+      body: FutureBuilder(
+        future: _refreshProduct(context),
+        builder: (ctx, snapshot) =>
+            snapshot.connectionState == ConnectionState.waiting
+                ? const Center(
+                    child: CircularProgressIndicator(),
+                  )
+                : RefreshIndicator(
+                    onRefresh: () => _refreshProduct(context),
+                    child: Consumer<Products>(
+                      builder: (ctx, productsData, _) => Padding(
+                        padding: const EdgeInsets.all(8),
+                        child: ListView.builder(
+                          itemBuilder: (_, i) {
+                            return Column(
+                              children: [
+                                UserProductItem(
+                                  imageUrl: productsData.items[i].imageUrl,
+                                  title: productsData.items[i].title,
+                                  id: productsData.items[i].id as String,
+                                ),
+                                const Divider()
+                              ],
+                            );
+                          },
+                          itemCount: productsData.items.length,
+                        ),
+                      ),
+                    ),
                   ),
-                  const Divider()
-                ],
-              );
-            },
-            itemCount: productsData.items.length,
-          ),
-        ),
       ),
     );
   }

@@ -42,10 +42,15 @@ class MyApp extends StatelessWidget {
               // ! KARNA ADA ERROR DI NULL PAKE CARA KEDUA AJA
               create: (_) => Products(),
               update: (_, auth, products) => products!
-                ..authToken = auth.token
-                    as String), //! ONLY REBUILD WHEN THE WIDGET LISTENED
+                ..auth =
+                    auth as Auth), //! ONLY REBUILD WHEN THE WIDGET LISTENED
           ChangeNotifierProvider(create: (ctx) => Cart()),
-          ChangeNotifierProvider(create: (ctx) => Orders()),
+          // ! MENCOBA PAKE CARA PERTAMA
+          ChangeNotifierProxyProvider<Auth, Orders>(
+            create: (ctx) => Orders(null, []),
+            update: (ctx, auth, prevOrders) => Orders(auth.token as String,
+                prevOrders == null ? [] : prevOrders.orders),
+          ),
         ],
         child: Consumer<Auth>(
           builder: (ctx, auth, _) => MaterialApp(

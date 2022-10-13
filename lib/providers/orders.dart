@@ -17,6 +17,11 @@ class OrderItem {
 class Orders with ChangeNotifier {
   List<OrderItem> _orders = [];
 
+  // ! CARANYA MIRIP KAYA PRODUCTS
+  // ! NTAR COBA PAKE CARA LAIN YANG KAYA DI PRODUCT LIAT DI VIDEO SECTION 11 NO 271
+  String? authToken;
+
+  Orders(this.authToken, this._orders);
   List<OrderItem> get orders {
     return [..._orders];
   }

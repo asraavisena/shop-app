@@ -49,11 +49,15 @@ class Products with ChangeNotifier {
   // final String authToken;
   // Products(this.authToken, this._items);
   // ! CARA KEDUA
+  Auth? _auth;
   String? _authToken;
+  String? _userId;
 
-  set authToken(String value) {
+  set auth(Auth value) {
 //   if (_auth != value) {
-    _authToken = value;
+    _auth = value;
+    _authToken = _auth!.token;
+    _userId = _auth!.userId;
 //   }
   }
 
@@ -83,13 +87,24 @@ class Products with ChangeNotifier {
   }
 
   // ! HTTP REQ FETCH DATA
-  Future<void> fetchProduct() async {
+  // ! [bool filterByUser = false] -> optional value kalau gk ada value default false
+  Future<void> fetchProduct([bool filterByUser = false]) async {
     // const -> compile time constant
     // final -> run time constant
-    final url = Uri.https(
+    // ! LANJUTIN DARI SINI
+    final filterString = !filterByUser
+        ? {
+            'auth': _authToken,
+          }
+        : {
+            'auth': _authToken,
+            'orderBy': json.encode("creatorId"),
+            'equalTo': json.encode(_userId)
+          };
+    var url = Uri.https(
         'shop-app-flutter-db272-default-rtdb.asia-southeast1.firebasedatabase.app',
         '/product.json',
-        {'auth': '$_authToken'});
+        filterString);
     try {
       final response = await http.get(
         url,
@@ -97,8 +112,17 @@ class Products with ChangeNotifier {
       final extractData = json.decode(response.body) as Map<String, dynamic>;
       // ! RUN CODE IF YOU HAVE NO DATA
       if (extractData == null) {
-        return null;
+        return;
       }
+
+      url = Uri.https(
+          'shop-app-flutter-db272-default-rtdb.asia-southeast1.firebasedatabase.app',
+          '/userFavourite/$_userId.json',
+          {'auth': _authToken});
+      final favouriteResp = await http.get(
+        url,
+      );
+      final favouriteData = jsonDecode(favouriteResp.body);
       final List<Product> loadedProduct = [];
       extractData.forEach((prodId, prodData) {
         loadedProduct.add(Product(
@@ -106,9 +130,12 @@ class Products with ChangeNotifier {
             title: prodData['title'],
             description: prodData['description'],
             price: prodData['price'],
+            isFavourite:
+                favouriteData == null ? false : favouriteData[prodId] ?? false,
             imageUrl: prodData['imageUrl']));
       });
 
+      print(favouriteData);
       _items = loadedProduct;
       notifyListeners();
     } catch (e) {
@@ -121,14 +148,16 @@ class Products with ChangeNotifier {
     // _items.add(value);
     final url = Uri.https(
         'shop-app-flutter-db272-default-rtdb.asia-southeast1.firebasedatabase.app',
-        '/product.json');
+        '/product.json',
+        {'auth': '$_authToken'});
     try {
       final response = await http.post(url,
           body: json.encode({
             'title': product.title,
             'description': product.description,
             'price': product.price,
-            'imageUrl': product.imageUrl
+            'imageUrl': product.imageUrl,
+            'creatorId': _userId
           }));
       final newProduct = Product(
           id: json.decode(response.body)['name'],
@@ -183,7 +212,8 @@ class Products with ChangeNotifier {
     if (prodIndex >= 0) {
       final url = Uri.https(
           'shop-app-flutter-db272-default-rtdb.asia-southeast1.firebasedatabase.app',
-          '/product/$id.json');
+          '/product/$id.json',
+          {'auth': '$_authToken'});
       try {
         await http.patch(url,
             body: json.encode({
@@ -216,7 +246,8 @@ class Products with ChangeNotifier {
   Future<void> deleteProduct(String id) async {
     final url = Uri.https(
         'shop-app-flutter-db272-default-rtdb.asia-southeast1.firebasedatabase.app',
-        '/product/$id.json');
+        '/product/$id.json',
+        {'auth': '$_authToken'});
     final existingProductIndex =
         _items.indexWhere((element) => element.id == id);
     Product? existingProduct = _items[existingProductIndex];
