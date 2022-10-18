@@ -14,6 +14,7 @@ import './screens/user_products.dart';
 import './screens/edit_product.dart';
 import './screens/add_product.dart';
 import './screens/auth.dart';
+import './screens/splash_screen.dart';
 
 Future<void> main() async {
   await dotenv.load();
@@ -62,7 +63,16 @@ class MyApp extends StatelessWidget {
                 colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.lime)
                     .copyWith(secondary: Colors.brown[300]),
                 fontFamily: 'Lato'),
-            home: auth.isAuth ? ProductsOverview() : AuthScreen(),
+            home: auth.isAuth
+                ? const ProductsOverview()
+                : FutureBuilder(
+                    future: auth.tryAoutoLogin(),
+                    builder: (ctx, authResultSnapshot) =>
+                        authResultSnapshot.connectionState ==
+                                ConnectionState.waiting
+                            ? SplashScreen()
+                            : AuthScreen(),
+                  ),
             routes: {
               ProductDetail.routeName: (ctx) => const ProductDetail(),
               CartScreen.routeName: (ctx) => const CartScreen(),
